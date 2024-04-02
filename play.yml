@@ -1,0 +1,42 @@
+---
+- name: Install and start Apache on Debian and Red Hat hosts
+  hosts: all
+  remote_user: ansible
+
+  tasks:
+    - name: Update apt cache (Debian)
+      apt:
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Apache2 (Debian)
+      apt:
+        name: apache2
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Start Apache2 service (Debian)
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Install httpd (Red Hat)
+      yum:
+        name: httpd
+        state: present
+      when: ansible_os_family == 'RedHat'
+
+    - name: Start httpd service (Red Hat)
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+      when: ansible_os_family == 'RedHat'
+
+    - name: Copy Cloned Site Files
+      copy:
+        src: /home/ansible/Altschool/Assignment-3
+        dest: /var/www/html/
+
